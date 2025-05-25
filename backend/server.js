@@ -34,10 +34,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/', generateTokenRoute);  // or '/api' if you prefer
 
-// Debug: Log the Mongo URI to see if it's correct
-// console.log('Mongo URI:', process.env.MONGO_URI);
-console.log('MONGO_URI:', process.env.MONGO_URI);
-
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
