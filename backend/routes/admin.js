@@ -36,7 +36,7 @@ router.post('/create-user', async (req, res) => {
 // Get all users (protected, only accessible by admin or operator)
 router.get('/users', authenticate, authorize(['admin', 'operator']), async (req, res) => {
   try {
-    const users = await User.find({}, 'fullName email role uniqueId'); // Select only needed fields
+    const users = await User.find({}, '-password '); // Select only needed fields
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch users' });
