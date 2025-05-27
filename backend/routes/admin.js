@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 
 // Create user route (for admin to create operator/viewer)
 router.post('/create-user', async (req, res) => {
-    const { email, password, role } = req.body;
+    const {fullName, email, password, role } = req.body;
 
     if (!['operator', 'viewer'].includes(role)) {
         return res.status(400).json({ error: 'Invalid role' });
@@ -18,6 +18,7 @@ router.post('/create-user', async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10); 
       console.log(hashedPassword);
         const newUser = new User({
+            fullName,
             email,
             password:hashedPassword,
             role,
@@ -35,7 +36,7 @@ router.post('/create-user', async (req, res) => {
 // Get all users (protected, only accessible by admin or operator)
 router.get('/users', authenticate, authorize(['admin', 'operator']), async (req, res) => {
   try {
-    const users = await User.find({}, 'email role uniqueId'); // Select only needed fields
+    const users = await User.find({}, 'fullName email role uniqueId'); // Select only needed fields
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch users' });
