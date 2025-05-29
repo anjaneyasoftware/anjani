@@ -43,14 +43,7 @@ router.get('/users', authenticate, authorize(['admin', 'operator']), async (req,
   }
 });
 
-// router.get('/users', async (req, res) => {
-//     try {
-//         const users = await User.find();
-//         res.json(users);
-//     } catch (err) {
-//         res.status(500).json({ error: err.message });
-//     }
-// });
+
 
 
 
@@ -66,6 +59,41 @@ router.delete('/users/:id', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+
+
+router.patch(
+  "/users/:id/active",
+  authenticate,
+  authorize(["admin","operator"]),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { active } = req.body;
+
+      if (typeof active !== "boolean") {
+        return res.status(400).json({ error: "Active must be a boolean value (true/false)" });
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        { active },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.json({
+        message: `User ${active ? "activated" : "deactivated"} successfully`,
+        user: updatedUser,
+      });
+    } catch (err) {
+      res.status(500).json({ error: "Server error" });
+    }
+  }
+);
 
 
 module.exports = router;
