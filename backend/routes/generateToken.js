@@ -19,7 +19,7 @@ router.get('/generate-token', (req, res) => {
 
   const uid = 0; // or parseInt(userId, 10) if needed
   const role = RtcRole.PUBLISHER;
-  const expirationTimeInSeconds = 3600;
+  const expirationTimeInSeconds = 18000;
   const currentTimestamp = Math.floor(Date.now() / 1000);
   const privilegeExpireTime = currentTimestamp + expirationTimeInSeconds;
 
