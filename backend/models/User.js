@@ -27,8 +27,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,  // Ensures the unique ID is unique for every user
-    }
-}, {
+    },
+    active: {
+      type: Boolean,
+      default: false, // or false if you want inactive by default
+    },
+},
+{
     timestamps: true,  // Automatically adds createdAt and updatedAt fields
 });
 
