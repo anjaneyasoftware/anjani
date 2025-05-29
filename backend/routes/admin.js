@@ -68,7 +68,7 @@ router.patch(
   authorize(["admin","operator"]),
   async (req, res) => {
     try {
-      const { id } = req.params;
+      const { uniqueId  } = req.params;
       const { active } = req.body;
 
       if (typeof active !== "boolean") {
@@ -76,7 +76,7 @@ router.patch(
       }
 
       const updatedUser = await User.findByIdAndUpdate(
-        id,
+        {uniqueId },
         { active },
         { new: true }
       );
