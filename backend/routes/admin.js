@@ -63,20 +63,20 @@ router.delete('/users/:id', async (req, res) => {
 
 
 router.patch(
-  "/users/:id/active",
+  "/users/:uniqueId/active",
   authenticate,
-  authorize(["admin","operator"]),
+  authorize(["admin", "operator"]),
   async (req, res) => {
     try {
-      const { uniqueId  } = req.params;
+      const { uniqueId } = req.params;
       const { active } = req.body;
 
       if (typeof active !== "boolean") {
         return res.status(400).json({ error: "Active must be a boolean value (true/false)" });
       }
 
-      const updatedUser = await User.findByIdAndUpdate(
-        {uniqueId },
+      const updatedUser = await User.findOneAndUpdate(
+        { uniqueId },
         { active },
         { new: true }
       );
@@ -94,6 +94,7 @@ router.patch(
     }
   }
 );
+
 
 
 module.exports = router;
