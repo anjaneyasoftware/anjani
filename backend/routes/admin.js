@@ -95,6 +95,40 @@ router.patch(
   }
 );
 
+router.patch(
+  "/users/:uniqueId/isScreenShare",
+  authenticate,
+  authorize(["admin", "operator"]),
+  async (req, res) => {
+    try {
+      const { uniqueId } = req.params;
+      const { isScreenShare } = req.body;
+
+      if (typeof active !== "boolean") {
+        return res.status(400).json({ error: "Active must be a boolean value (true/false)" });
+      }
+
+      const updatedUser = await User.findOneAndUpdate(
+        { uniqueId },
+        { isScreenShare },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.json({
+        message: `User ${isScreenShare ? "shared" : "unshared"} successfully`,
+        user: updatedUser,
+      });
+    } catch (err) {
+      res.status(500).json({ error: "Server error" });
+    }
+  }
+);
+
+
 
 
 module.exports = router;
