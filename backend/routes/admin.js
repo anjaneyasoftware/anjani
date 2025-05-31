@@ -104,7 +104,7 @@ router.patch(
       const { uniqueId } = req.params;
       const { isScreenShare } = req.body;
 
-      if (typeof active !== "boolean") {
+      if (typeof isScreenShare !== "boolean") {
         return res.status(400).json({ error: "Active must be a boolean value (true/false)" });
       }
 
