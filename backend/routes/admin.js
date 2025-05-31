@@ -7,10 +7,6 @@ const bcrypt = require('bcryptjs');
 
 
 // Create user route (for admin to create operator/viewer)
-const { v4: uuidv4 } = require('uuid');
-const bcrypt = require('bcrypt');
-const User = require('../models/User'); // adjust path if needed
-
 router.post('/create-users', async (req, res) => {
   const users = req.body.users;
 
@@ -45,7 +41,6 @@ router.post('/create-users', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 
 
