@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
       type: Boolean,
       default: false, // or false if you want inactive by default
     },
+    isScreenShare: {
+      type: Boolean,
+      default: false, // or false if you want inactive by default
+    },
 },
 {
     timestamps: true,  // Automatically adds createdAt and updatedAt fields
