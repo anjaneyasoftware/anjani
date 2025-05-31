@@ -7,30 +7,47 @@ const bcrypt = require('bcryptjs');
 
 
 // Create user route (for admin to create operator/viewer)
-router.post('/create-user', async (req, res) => {
-    const {fullName, email, password, role } = req.body;
+const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcrypt');
+const User = require('../models/User'); // adjust path if needed
 
-    if (!['operator', 'viewer'].includes(role)) {
-        return res.status(400).json({ error: 'Invalid role' });
+router.post('/create-users', async (req, res) => {
+  const users = req.body.users;
+
+  if (!Array.isArray(users) || users.length === 0) {
+    return res.status(400).json({ error: 'No users provided' });
+  }
+
+  try {
+    const newUsers = [];
+
+    for (const user of users) {
+      const { fullName, email, password, role } = user;
+
+      if (!['operator', 'viewer'].includes(role)) {
+        return res.status(400).json({ error: `Invalid role for user: ${email}` });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      newUsers.push({
+        fullName,
+        email,
+        password: hashedPassword,
+        role,
+        uniqueId: uuidv4(),
+      });
     }
 
-    try {
-      const hashedPassword = await bcrypt.hash(password, 10); 
-      console.log(hashedPassword);
-        const newUser = new User({
-            fullName,
-            email,
-            password:hashedPassword,
-            role,
-            uniqueId: uuidv4()
-        });
-
-        await newUser.save();
-        res.status(201).json({ message: `${role} created successfully`, user: newUser });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+    const insertedUsers = await User.insertMany(newUsers);
+    res.status(201).json({ message: 'Users created successfully', users: insertedUsers });
+  } catch (err) {
+    console.error("Batch user creation failed:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
+
+
+
 
 // Get all users for display
 // Get all users (protected, only accessible by admin or operator)
